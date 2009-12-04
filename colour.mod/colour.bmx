@@ -164,7 +164,7 @@ Type TColour
 	EndRem
 	Function GetCurrent:TColour()
 		Local r:Int, g:Int, b:Int
-		GetTColour(r, g, b)
+		GetColor(r, g, b)
 		Return TColour.CreateRGB(r, g, b, GetAlpha())
 	End Function
 	
@@ -190,7 +190,7 @@ Type TColour
 	EndRem	
 	Method Set()
 		SetAlpha(a * GetAlpha())
-		SetTColour(r, g, b)
+		SetColor(r, g, b)
 	End Method
 	
 	Rem
