@@ -13,3 +13,7 @@ Provides an interface to the Snarl notification system for Windows.
 --Threadedio.mod
 
 Provides a standardised system for thread safe IO.
+
+--Colour.mod
+
+Provides a useful class for storing, converting and creating colour data.
