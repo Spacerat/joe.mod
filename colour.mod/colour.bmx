@@ -9,6 +9,7 @@ about: Stores ARGB information.
 EndRem
 Type TColour
 	Field r:Byte, g:Byte, b:Byte, a:Float = 1
+	Global savedcol:TColour = Null
 	
 	Rem
 	bbdoc: Creates a new TColour with the given argb values.
@@ -167,6 +168,22 @@ Type TColour
 		GetColor(r, g, b)
 		Return TColour.CreateRGB(r, g, b, GetAlpha())
 	End Function
+	
+	Rem
+	bbdoc: Save the current Max2D colour so that it can be retrieved later.
+	EndRem
+	Function SaveCurrent()
+		Local r:Int, g:Int, b:Int
+		GetColor(r, g, b)
+		savedcol = TColour.CreateRGB(r, g, b, GetAlpha())
+	End Function
+	
+	Rem
+	bbdoc: Retrieve the saved Max2D colour 
+	EndRem
+	Function GetSaved:TColour()
+		Return savedcol.Copy()
+	EndFunction
 	
 	Rem
 	bbdoc: Convert this TColour to a bgra integer.
