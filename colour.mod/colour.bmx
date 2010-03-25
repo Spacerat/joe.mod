@@ -16,89 +16,149 @@ Type TColour
 	EndRem
 	Function CreateRGB:TColour(r:Byte, g:Byte, b:Byte, a:Float = 1)
 		Local n:TColour = New TColour
-		n.r = r
-		n.g = g
-		n.b = b
+		n.r = Min(Max(r,0),255)
+		n.g = Min(Max(g,0),255)
+		n.b = Min(Max(b,0),255)
 		n.a = a
 		Return n
 	EndFunction
 
+	Rem
+	bbdoc: Return Red
+	EndRem
 	Function Red:TColour(a:Float = 1)
 		Return TColour.CreateRGB(255, 0, 0, a)
 	End Function
 
+	Rem
+	bbdoc: Return Green
+	EndRem
 	Function Green:TColour(a:Float = 1)
 		Return TColour.CreateRGB(0, 128, 0, a)
 	End Function
-	
+
+	Rem
+	bbdoc: Return Lime
+	EndRem	
 	Function Lime:TColour(a:Float = 1)
 		Return TColour.CreateRGB(0,255,0,a)
 	End Function
-	
+
+	Rem
+	bbdoc: Return Blue
+	EndRem	
 	Function Blue:TColour(a:Float = 1)
 		Return TColour.CreateRGB(0, 0, 255, a)
 	End Function
 
+	Rem
+	bbdoc: Return Cyan
+	EndRem
 	Function Cyan:TColour(a:Float = 1)
 		Return TColour.CreateRGB(0, 255, 255, a)
 	End Function	
-		
+
+	Rem
+	bbdoc: Return Yellow
+	EndRem		
 	Function Yellow:TColour(a:Float = 1)
 		Return TColour.CreateRGB(255, 255, 0, a)
 	End Function
-	
+
+	Rem
+	bbdoc: Return White
+	EndRem	
 	Function White:TColour(a:Float = 1)
 		Return TColour.CreateRGB(255, 255, 255, a)
 	End Function
-	
+
+	Rem
+	bbdoc: Return Black
+	EndRem		
 	Function Black:TColour(a:Float = 1)
 		Return TColour.CreateRGB(0, 0, 0, a)
 	End Function
-		
+
+	Rem
+	bbdoc: Return Magenta
+	EndRem		
 	Function Magenta:TColour(a:Float = 1)
 		Return TColour.CreateRGB(255, 0, 255, a)
 	End Function
-	
+
+	Rem
+	bbdoc: Return Fuchsia
+	EndRem	
 	Function Fuchsia:TColour(a:Float = 1)
 		Return Magenta(a)
 	End Function
-		
+
+	Rem
+	bbdoc: Return Gray
+	EndRem		
 	Function Gray:TColour(a:Float = 1)
 		Return TColour.CreateRGB(128, 128, 128, a)
 	End Function
 
+	Rem
+	bbdoc: Return Grey
+	EndRem
 	Function Grey:TColour(a:Float = 1)
 		Return Gray(a)
 	End Function	
-	
+
+	Rem
+	bbdoc: Return Silver
+	EndRem	
 	Function Silver:TColour(a:Float = 1)
 		Return TColour.CreateRGB(191, 191, 191, a)
 	End Function
-	
+
+	Rem
+	bbdoc: Return Navy
+	EndRem	
 	Function Navy:TColour(a:Float = 1)
 		Return TColour.CreateRGB(0, 0, 128, a)
 	End Function
 
+	Rem
+	bbdoc: Return Olive
+	EndRem
 	Function Olive:TColour(a:Float = 1)
 		Return TColour.CreateRGB(128, 128, 0, a)
 	End Function
-	
+
+	Rem
+	bbdoc: Return Purple
+	EndRem	
 	Function Purple:TColour(a:Float = 1)
 		Return TColour.CreateRGB(128, 0, 128, a)
 	End Function
-		
+
+	Rem
+	bbdoc: Return Maroon
+	EndRem		
 	Function Maroon:TColour(a:Float = 1)
 		Return TColour.CreateRGB(128, 0, 0, a)
 	End Function
-	
+
+	Rem
+	bbdoc: Return Orange
+	EndRem	
 	Function Orange:TColour(a:Float = 1)
 		Return TColour.CreateRGB(255, 165, 0, a)
 	End Function
-	
+
+	Rem
+	bbdoc: Return Brown
+	EndRem	
 	Function Brown:TColour(a:Float = 1)
 		Return TColour.CreateRGB(139, 69, 19, a)
 	End Function
-
+	Rem
+	
+	bbdoc: Return Pink
+	EndRem
 	Function Pink:TColour(a:Float = 1)
 		Return TColour.CreateRGB(255, 192, 203, a)
 	End Function
@@ -200,6 +260,20 @@ Type TColour
 	
 	Method ToString:String()
 		Return "R: " + String(r) + "  G: " + String(g) + "  B: " + String(b) + "  A: " + String(a)
+	End Method
+	
+	Rem
+	bbdoc: Return a new colour darker than this one.
+	EndRem	
+	Method Darker:TColour(amt:Int=20)
+		Return New TColour.CreateRGB(r-amt,g-amt,b-amt,a)
+	End Method
+	
+	Rem
+	bbdoc: Return a new colour lighter than this one.
+	EndRem
+	Method Lighter:TColour(amt:Int=20)
+		Return New TColour.CreateRGB(r+amt,g+amt,b+amt,a)
 	End Method
 	
 	Rem
