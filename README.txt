@@ -17,3 +17,11 @@ Provides a standardised system for thread safe IO.
 --Colour.mod
 
 Provides a useful class for storing, converting and creating colour data.
+
+--LogprintStream.mod
+
+Provides a simple, pluggable utility for automatically writing all StandardIO output to a file.
+
+--Advtext.mod
+
+Provides a function for drawing text wrapped to a set width, and formatted with different colours/opacities.
