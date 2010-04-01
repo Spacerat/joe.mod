@@ -17,14 +17,14 @@ Const CT:String = ">"  'Close Tag
 Const NL:String = "\n" 'Newline
 Const LineSep:Int = 1  'Line separation
 
-Function DrawWrappedLine(a:String, x:Float, xx:Float Var, yy:Float Var, Width:Int)
+Function DrawWrappedLine(a:String, x:Float, xx:Float Var, yy:Float Var, Width:Int, shadow:Int = False)
 
 
 	If Width <= 0
-		DrawText(a, xx, yy)
+		DrawTextShadow(a, xx, yy,,, shadow)
 		xx:+TextWidth(a)
 	ElseIf TextWidth(a) - x + xx < Width
-		DrawText(a, xx, yy)
+		DrawTextShadow(a, xx, yy,,, shadow)
 		xx:+TextWidth(a)
 	Else
 			
@@ -53,12 +53,16 @@ Function DrawWrappedLine(a:String, x:Float, xx:Float Var, yy:Float Var, Width:In
 
 				s = a[p..i]
 				p = i
-				DrawText(s, xx, yy)
+				If (shadow)
+					DrawTextShadow(s, xx, yy)
+				Else
+					DrawTextShadow(s, xx, yy,,, shadow)
+				EndIf
 				xx = x
 				yy:+TextHeight(s) + LineSep
 				
 				If TextWidth(a[p..a.length]) - x + xx < Width
-					DrawText(a[p..a.length], xx, yy)
+					DrawTextShadow(a[p..a.length], xx, yy,,, shadow)
 					xx:+TextWidth(a[p..a.length])
 					Exit
 				EndIf
@@ -85,7 +89,7 @@ Function DrawParsedText:Int(s:String, x:Float, y:Float, WrapWidth:Int = -1)
 	Local Text:String = ""
 	Local Escape:Int = False
 	Local Alpha:Float = GetAlpha()
-		
+	Local shadow:Int = False
 	For Local c:Int = 0 Until s.Length
 		Local ch:String = Chr(s[c])		
 		
@@ -94,7 +98,7 @@ Function DrawParsedText:Int(s:String, x:Float, y:Float, WrapWidth:Int = -1)
 				Case "<"
 					If Not (Escape)
 						Tag = 1
-						DrawWrappedLine(Text, x, xx, yy, WrapWidth)
+						DrawWrappedLine(Text, x, xx, yy, WrapWidth, shadow)
 						Text = ""
 					Else
 						Text:+ch
@@ -106,7 +110,7 @@ Function DrawParsedText:Int(s:String, x:Float, y:Float, WrapWidth:Int = -1)
 					Escape = True
 				Case "n"
 					If (Escape)
-						DrawWrappedLine(Text, x, xx, yy, WrapWidth)
+						DrawWrappedLine(Text, x, xx, yy, WrapWidth, shadow)
 						xx = x
 						yy:+TextHeight(s) + LineSep
 						Text = ""
@@ -115,7 +119,7 @@ Function DrawParsedText:Int(s:String, x:Float, y:Float, WrapWidth:Int = -1)
 					EndIf
 					Escape = False
 				Case Chr(10), Chr(13)
-					DrawWrappedLine(Text, x, xx, yy, WrapWidth)
+					DrawWrappedLine(Text, x, xx, yy, WrapWidth, shadow)
 					xx = x
 					yy:+TextHeight(s) + LineSep
 					Text = ""
@@ -134,7 +138,7 @@ Function DrawParsedText:Int(s:String, x:Float, y:Float, WrapWidth:Int = -1)
 				If t >= 0
 					
 					Local Key:String = Text[0..t]
-					Local Value:String = Text[t + 1..Text.length]
+					Local Value:String = Text[t + 1..Text.length].ToLower()
 					
 					Select Key.ToLower()
 						Case "color", "colour"
@@ -146,6 +150,12 @@ Function DrawParsedText:Int(s:String, x:Float, y:Float, WrapWidth:Int = -1)
 							EndIf
 						Case "alpha"
 							SetAlpha(Value.ToFloat() * Alpha)
+						Case "shadow"
+							If Value = "off"
+								shadow = False
+							ElseIf Value = "on"
+								shadow = True
+							End If
 					End Select
 				Else
 					Select Text.ToLower()
@@ -153,6 +163,8 @@ Function DrawParsedText:Int(s:String, x:Float, y:Float, WrapWidth:Int = -1)
 							yy:+TextHeight(s) + LineSep
 							xx = x
 							Text = ""
+						Case "shadow"
+							shadow = True
 						Default
 							Local nc:TColour = TColour.FromName(Text, GetAlpha())
 							If (nc) nc.Set()
@@ -164,8 +176,36 @@ Function DrawParsedText:Int(s:String, x:Float, y:Float, WrapWidth:Int = -1)
 			EndIf
 		EndIf
 	Next
-	DrawWrappedLine(Text, x, xx, yy, WrapWidth)
+	DrawWrappedLine(Text, x, xx, yy, WrapWidth, shadow)
 	OrigCol.Set()
 	
 	Return (yy + TextHeight("|") + LineSep - y)
+End Function
+
+Function DrawTextCentred(s:String, x:Float, y:Float, hcentre:Int = True, vcentre:Int = False)
+	If (hcentre) x:-(TextWidth(s) / 2)
+	If (vcentre) y:-(TextHeight(s) / 2)
+	DrawText(s, x, y)
+End Function
+
+Function DrawTextCentredShadow(s:String, x:Float, y:Float, xoffset:Float = 3, yoffset:Float = 3, hcentre:Int = True, vcentre:Int = False)
+	If (hcentre) x:-(TextWidth(s) / 2)
+	If (vcentre) y:-(TextHeight(s) / 2)
+	DrawTextShadow(s, x, y)
+End Function
+
+Function DrawTextShadow(s:String, x:Float, y:Float, xoffset:Float = 3, yoffset:Float = 3, drawshadow:Int = True)
+	If drawshadow
+		Local r:Int, g:Int, b:Int, a:Float
+		GetColor(r, g, b)
+		a = GetAlpha()
+		DrawText(s, x, y)
+		SetColor(r + 20, g + 20, b + 20)
+		SetAlpha(a / 5.0)
+		DrawText(s, x + xoffset, y + yoffset)
+		SetColor(r, g, b)
+		SetAlpha(a)
+	Else
+		DrawText(s, x, Y)
+	EndIf
 End Function
