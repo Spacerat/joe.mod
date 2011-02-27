@@ -1,4 +1,12 @@
-'This file was edited with BLIde
+
+Module Joe.ThreadedIO
+
+ModuleInfo "Name: ThreadedIO"
+ModuleInfo "Description: Some simple functions for thread-safe IO."
+ModuleInfo "Version: 0.9.0"
+ModuleInfo "Author: Joseph 'spacerat' Atkins-Turkish"
+ModuleInfo "License: Public Domain"
+
 SuperStrict
 
 Import brl.standardio

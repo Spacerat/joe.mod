@@ -5,13 +5,16 @@ Rem
 bbdoc: RIFF File Manipulator
 about: The RIFF module allows easy read/write access to RIFF format files.
 End Rem
-Module JOE.RIFF
+Module Joe.RIFF
 
-
+ModuleInfo "Name: RIFF Format Manipulator"
+ModuleInfo "Description: The RIFF module allows easy read/write access to RIFF format files."
 ModuleInfo "Version: 0.9.0"
 ModuleInfo "Author: Joseph 'Spacerat' Atkins-Turkish"
 ModuleInfo "License: Public Domain (see source for notes)"
 ModuleInfo "History: 0.9.0 Release to blitzmax.com"
+
+
 
 Rem
 This module is public domain because it's pretty simple, but if you use it for anything you release

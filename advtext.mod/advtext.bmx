@@ -5,9 +5,13 @@ Rem
 bbdoc: Advanced text module.
 about: Allows you to easilly render wrapped and colour formatted text.
 End Rem
-Module joe.ADVTEXT
+Module joe.AdvText
 
-ModuleInfo "Author: Joseph 'Spacerat' Atkins-Turkish"
+ModuleInfo "Name: Advanced Text"
+ModuleInfo "Description: Allows you to easilly render wrapped and colour formatted text."
+ModuleInfo "Version: 0.1.0"
+ModuleInfo "Author: Joseph 'spacerat' Atkins-Turkish"
+ModuleInfo "License: Public Domain"
 
 Import joe.colour
 

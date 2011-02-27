@@ -1,6 +1,14 @@
 
 SuperStrict
 
+
+Module Joe.Colour
+ModuleInfo "Name: Colour Module"
+ModuleInfo "Description: Very basic module for storing and manipulating colours."
+ModuleInfo "Version: 0.1.0"
+ModuleInfo "Author: Joseph 'Spacerat' Atkins-Turkish"
+ModuleInfo "License: Public Domain"
+
 Import brl.max2d
 
 Rem

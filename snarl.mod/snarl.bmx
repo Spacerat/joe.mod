@@ -1,9 +1,10 @@
-Rem
-bbdoc: Snarl interface
-EndRem
+
 Module Joe.Snarl
+
+ModuleInfo "Name: Snarl Interface"
+ModuleInfo "Description: A Blitz wrapper for the  Snarl C API, and a useful class for abstracting it."
 ModuleInfo "Version: 0.9.0"
-ModuleInfo "Author: Spacerat"
+ModuleInfo "Author: Joseph 'spacerat' Atkins-Turkish"
 ModuleInfo "License: Public Domain"
 
 SuperStrict
@@ -116,12 +117,12 @@ Type TSnarlNotification
 		IconPath = RealPath(IconPath)
 		snarlID = snShowMessage(title, Description, timeout, IconPath, Null, Null)
 		
-		self.Title = title
-		self.Description = description
-		self.Timeout = Timeout
-		self.IconPath = IconPath
+		Self.Title = title
+		Self.Description = description
+		Self.Timeout = Timeout
+		Self.IconPath = IconPath
 		
-		If snarlID <> SNARL_M_FAILED and snarlID <> SNARL_M_TIMED_OUT Return Self
+		If snarlID <> SNARL_M_FAILED And snarlID <> SNARL_M_TIMED_OUT Return Self
 	End Method
 
 	Rem

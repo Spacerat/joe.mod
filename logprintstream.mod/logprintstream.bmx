@@ -7,15 +7,17 @@ about: Log Print Stream provides a simple, pluggable utility for automatically w
 End Rem
 Module joe.logprintstream
 
-
+ModuleInfo "Name: Log Print Stream"
+ModuleInfo "Description: Allows you to easilly log all calls to Print()."
 ModuleInfo "Author: Joseph 'Spacerat' Atkins-Turkish"
+ModuleInfo "License: Public Domain"
 
 Import brl.standardio
 Import brl.filesystem
 Import brl.system
 
 Rem
-bbdoc: Log Print stream, logs all standarid IO output.
+bbdoc: Log Print stream, logs all standard IO output.
 about: The log print stream allows you to automatically save all standardIO output to a file. To set it
 up, simply call New TLogPrintStream.SetLogFile(URL). 
 EndRem
