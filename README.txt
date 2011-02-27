@@ -25,3 +25,7 @@ Provides a simple, pluggable utility for automatically writing all StandardIO ou
 --Advtext.mod
 
 Provides a function for drawing text wrapped to a set width, and formatted with different colours/opacities.
+
+--Tiles.mod
+
+A tile engine, including a map writer/loader.
