@@ -195,6 +195,10 @@ Type TTileGrid
 	endrem
 	Method RemoveTile(x:Int, y:Int, z:Int = 0)
 		If Not TileInGrid(x, y, z) Return
+		Local t:TTile = Tiles[x, y, z]
+		If t.Zone
+			t.Zone.RemoveTile(t)
+		End If
 		Tiles[x, y, z] = Null
 	End Method
 	
@@ -253,11 +257,15 @@ Type TTileGrid
 	about: All values here are not tile coordinates but actual coordinates. This means that some tiles
 	may be only partially drawn.
 	endrem
-	Method DrawArea(x:Float, y:Float, w:Float, h:Float, rx:Int, ry:Int, Floor:Int = 0, zoom:Float = 1, outsidegrid:Int = 0, lines:Int = 0)
+	Method DrawArea(x:Float, y:Float, w:Float, h:Float, rx:Int, ry:Int, Floor:Int = 0, zoom:Float = 1, outsidegrid:Int = 0, lines:Int = False, useviewport:Int = False)
 		Local ox:Int, oy:Int, ow:Int, oh:Int, osx:Float, osy:Float
-		GetViewport(ox, oy, ow, oh)
+		
 		GetScale(osx, osy)
-		SetViewport(x, y, w, h)
+		If (useviewport)
+			GetViewport(ox, oy, ow, oh)
+			SetViewport(x, y, w, h)
+		EndIf
+		
 		SetScale(zoom, zoom)
 		
 		x:-rx
@@ -299,7 +307,7 @@ Type TTileGrid
 		
 		
 		
-		SetViewport(ox, oy, ow, oh)
+		If (useviewport) SetViewport(ox, oy, ow, oh)
 		SetScale(osx, osy)
 	End Method
 	
@@ -402,7 +410,26 @@ Type TTileGrid
 				Return
 			End If
 		Next
-	End Method	
+	End Method
+	
+	Rem
+	bbdoc: Remove a zone, and all of its tiles.
+	EndRem
+	Method RemoveZone(zone:TTileZone)
+		Zones.Remove(zone)
+		Local t:TTile
+		For Local xx:Int = 0 Until Width
+			For Local yy:Int = 0 Until Height
+				For Local zz:Int = 0 Until Depth
+					t = Tiles[xx, yy, zz]
+					If Not t Continue
+					If t.Zone = zone
+						Self.RemoveTile(xx, yy, zz)
+					End If
+				Next
+			Next
+		Next
+	End Method
 	
 	Rem
 	bbdoc: Set to True to have each tile draw its coordinates.

@@ -99,7 +99,7 @@ Type TTileFormat_Map Extends TTileFormat
 		WriteUnsignedInt32(s_tsize, map.TileHeight)
 		
 		Local s_msize:TStream = c_mapinfo.NewChunk(RIFFID_MAPSIZE).GetNewDataStream()
-	    WriteUnsignedInt32(s_msize, map.Width)
+		WriteUnsignedInt32(s_msize, map.Width)
 		WriteUnsignedInt32(s_msize, map.Height)
 		WriteUnsignedInt32(s_msize, map.Depth)
 		
@@ -174,7 +174,10 @@ Type TTileFormat_Map Extends TTileFormat
 		
 		Return 1
 	End Method	
-
+	
+	Rem
+	bbdoc: Override this method if you want the loader to create an object other than a base TTileGrid.
+	EndRem
 	Method CreateTileGrid:TTileGrid(w:Int, h:Int, d:Int, tw:Int, th:Int)
 		Return TTileGrid.Create(w, h, d, tw, th)
 	EndMethod
