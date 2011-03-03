@@ -7,6 +7,19 @@ Import brl.map
 Import brl.standardio
 ?
 
+Type TTileSetException
+	Field url:String
+	
+	Method Init:TTileSetException(url:String)
+		Self.url = url
+		Return Self
+	End Method
+	
+	Method ToString:String()
+		Return "Unable to load tileset from " + url
+	End Method
+End Type
+
 Type TTileSet
 	
 	Rem
@@ -26,7 +39,7 @@ Type TTileSet
 		Local img:TImage = LoadImage(url, DYNAMICIMAGE | MASKEDIMAGE)
 		If Not (img)
 			?debug
-			Throw "Null Image " + String(url)
+			Throw New TTileSetException.Init(url.ToString())
 			?
 			Return Null
 		EndIf

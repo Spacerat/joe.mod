@@ -6,11 +6,10 @@ Import "TileGrid.bmx"
 
 Type TTileFormat_Map Extends TTileFormat
 	
-	Method New()
-		SetInfo("Default tile format","map")
+	Method Init(descrip:String = "Default tile format", ext:String = "map")
+		SetInfo(descrip, ext)
 		AddFormat()
 	End Method
-
 	
 	Method SaveProperties(properties:TProperties, list:RIFFList)
 		For Local prop:String = EachIn properties.map.Keys()
@@ -332,5 +331,3 @@ Type TTileFormat_Map Extends TTileFormat
 	Global RIFFID_IMAGE:String = "img "
 	Global RIFFID_IMAGEID:String = "iid "
 End Type
-
-New TTileFormat_Map
