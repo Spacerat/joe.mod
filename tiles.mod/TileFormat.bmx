@@ -13,43 +13,36 @@ Type TTileFormat_Map Extends TTileFormat
 	
 	Method SaveProperties(properties:TProperties, list:RIFFList)
 		For Local prop:String = EachIn properties.map.Keys()
-			
 			Local props:TStream = list.NewChunk(prop).GetNewDataStream()
 			
-			Select Properties.GetDataType(prop).ToLower()
-				Case "string"
+			Select Properties.GetDataType(prop)
+				Case "String"
 					props.WriteString("S")
 					props.WriteString(properties.GetData(prop))
-				Case "integer"
+				Case "Integer"
 					props.WriteString("I")
 					props.WriteInt(Int(properties.GetData(prop)))
-				Case "byte"
-					props.WriteString("B")
-					props.WriteByte(Byte(properties.GetData(prop)))
-				Case "float"
+				Case "Float"
 					props.WriteString("F")
 					props.WriteFloat(Float(properties.GetData(prop)))
 			EndSelect
-			
 		Next
 	EndMethod
 	
 	Method LoadProperties(properties:TProperties, list:RIFFList)
 		For Local prop:RIFFChunk = EachIn list.Subchunks
-			
-			If prop.ID = RIFFID_IMAGEID Continue
+			If prop.id = RIFFID_IMAGEID Continue
 			Local str:TStream = prop.GetNewDataStream()
 			Select Chr(str.ReadByte())
 				Case "S"
-					properties.AddProperty(prop.id, "String", str.ReadString(str.Size() - 1))
+					properties.SetString(prop.id, str.ReadString(str.Size() - 1))
 				Case "I"
-					properties.AddProperty(prop.id, "Integer", str.ReadInt())
+					properties.SetInt(prop.id, str.ReadInt())
 				Case "B"
-					properties.AddProperty(prop.id, "Byte", str.ReadByte())
+					properties.SetInt(prop.id, str.ReadByte())
 				Case "F"
-					properties.AddProperty(prop.id, "Float", str.ReadFloat())
+					properties.SetFloat(prop.id, str.ReadFloat())
 			End Select			
-		
 		Next
 	End Method	
 	

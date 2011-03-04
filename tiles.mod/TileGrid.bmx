@@ -432,6 +432,15 @@ Type TTileGrid
 	End Method
 	
 	Rem
+	bbdoc: Add an entity on the map.
+	Endrem
+	Method AddEntity(x:Float, y:Float, ent:TTileEntity)
+		ent.x = x
+		ent.y = y
+		Entities.AddLast(ent)
+	End Method
+	
+	Rem
 	bbdoc: Set to True to have each tile draw its coordinates.
 	EndRem
 	Field DrawCoords:Int = 0
@@ -440,10 +449,33 @@ Type TTileGrid
 	Field TileWidth:Int, TileHeight:Int
 	Field DefaultTile:TTile
 	Field Tiles:TTile[,,]
+	Field Entities:TList = New TList
 	
 	Field Zones:TList = New TList
 	
 EndType
+
+Rem
+bbdoc: Tile entity, for storing "entities" on a map. 
+EndRem
+Type TTileEntity
+	Field x:Float, y:Float
+	Field typename:String
+	Rem
+	bbdoc: This entity's properties.
+	EndRem
+	Field props:TProperties
+	
+	Rem
+	bbdoc: Initialise a tile entity.
+	EndRem
+	Method Init:TTileEntity(name:String, properties:TProperties = Null)
+		typename = name
+		props = properties
+		If props = Null Then props = New TProperties
+		Return Self
+	EndMethod
+End Type
 
 Rem
 bbdoc: An individual tile.
