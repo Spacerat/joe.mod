@@ -257,7 +257,7 @@ Type TTileGrid
 	about: All values here are not tile coordinates but actual coordinates. This means that some tiles
 	may be only partially drawn.
 	endrem
-	Method DrawArea(x:Float, y:Float, w:Float, h:Float, rx:Int, ry:Int, Floor:Int = 0, zoom:Float = 1, outsidegrid:Int = 0, lines:Int = False, useviewport:Int = False)
+	Method DrawArea(x:Float, y:Float, w:Float, h:Float, rx:Float, ry:Float, Floor:Int = 0, zoom:Float = 1, outsidegrid:Int = 0, lines:Int = False, useviewport:Int = False)
 		Local ox:Int, oy:Int, ow:Int, oh:Int, osx:Float, osy:Float
 		
 		GetScale(osx, osy)
@@ -395,6 +395,7 @@ Type TTileGrid
 	EndRem
 	Method AddZone(zone:TTileZone)
 		Zones.AddLast(zone)
+		zone.parent = Self
 		If zone.ID >= 0 Return
 		For Local i:Int = 0 To 255
 			Local f:Int = 1
@@ -417,6 +418,7 @@ Type TTileGrid
 	EndRem
 	Method RemoveZone(zone:TTileZone)
 		Zones.Remove(zone)
+		zone.parent = Null
 		Local t:TTile
 		For Local xx:Int = 0 Until Width
 			For Local yy:Int = 0 Until Height
@@ -434,10 +436,18 @@ Type TTileGrid
 	Rem
 	bbdoc: Add an entity on the map.
 	Endrem
-	Method AddEntity(x:Float, y:Float, ent:TTileEntity)
+	Method AddEntity(x:Float, y:Float, z:Float, ent:TTileEntity)
 		ent.x = x
 		ent.y = y
+		ent.z = z
 		Entities.AddLast(ent)
+	End Method
+	
+	Rem
+	bbdoc: Remove an entity from the map
+	EndRem
+	Method RemoveEntity(ent:TTileEntity)
+		Entities.Remove(ent)
 	End Method
 	
 	Rem
@@ -450,7 +460,7 @@ Type TTileGrid
 	Field DefaultTile:TTile
 	Field Tiles:TTile[,,]
 	Field Entities:TList = New TList
-	
+	Field ForceDraw:Int = False
 	Field Zones:TList = New TList
 	
 EndType
@@ -459,7 +469,13 @@ Rem
 bbdoc: Tile entity, for storing "entities" on a map. 
 EndRem
 Type TTileEntity
-	Field x:Float, y:Float
+	Rem
+	bbdoc: Entity's position.
+	EndRem
+	Field x:Float, y:Float, z:Float
+	Rem
+	bbdoc: Entitiy's type name.
+	EndRem
 	Field typename:String
 	Rem
 	bbdoc: This entity's properties.
@@ -508,8 +524,8 @@ Type TTile
 	Method Draw(x:Float, y:Float)
 		If (image)
 			If (Zone)
-				If (Zone.visible)
-					DrawImage(Image.image, x, y)
+				If (Zone.visible Or Zone.parent.ForceDraw)
+					DrawImage(Image.Image, x, y)
 				EndIf
 			Else
 				DrawImage(Image.image, x, y)
@@ -558,7 +574,12 @@ Type TTileZone
 	bbdoc: Zone's numeric ID.
 	about: Do not change. This is set automatically upon load.
 	EndRem
-	Field ID:Int = -1
+	Field id:Int = -1
+	
+	Rem
+	bbdoc: Map this zone belongs to
+	EndRem
+	Field parent:TTileGrid
 	
 	Rem
 	bbdoc: A key-value store of properties associated with this zone.
@@ -576,8 +597,9 @@ Type TTileZone
 	Rem
 	bbdoc: Initialise the zone with a name.
 	EndRem
-	Method Init:TTileZone(name:String)
+	Method Init:TTileZone(name:String, parent:TTileGrid = Null)
 		Self.Name = name
+		Self.parent = parent
 		Return Self
 	End Method
 	

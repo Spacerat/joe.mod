@@ -281,17 +281,17 @@ Type TProperties
 				Local v:Float = p.ToFloat()
 				Select datatype.ToLower()
 					Case "Int", "Integer"
-						SetInt(label, v, p.default_value)
+						SetInt(label, v)
 					Case "Float"
-						SetFloat(label, v, p.default_value)
+						SetFloat(label, v)
 				End Select
 			Case "String"
 				Local s:String = label.ToString()
 				Select datatype.ToLower()
 					Case "Int", "Integer"
-						SetInt(label, s.ToInt(), p.default_value)
+						SetInt(label, s.ToInt())
 					Case "Float"
-						SetFloat(label, s.ToFloat(), p.default_value)
+						SetFloat(label, s.ToFloat())
 				End Select
 		End Select
 	End Method
@@ -383,6 +383,15 @@ Type TProperties
 			EndIf
 		Next
 		Return n
+	End Method
+	
+	Method IsDefault:Int(label:String)
+		Local p:TProp = TProp(map.ValueForKey(label))
+		If p
+			Return p.IsDefault()
+		Else
+			Throw "Invalid label "+label
+		EndIf
 	End Method
 	
 	Method FindProperty:Object(label:String)

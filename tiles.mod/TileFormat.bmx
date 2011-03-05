@@ -12,36 +12,45 @@ Type TTileFormat_Map Extends TTileFormat
 	End Method
 	
 	Method SaveProperties(properties:TProperties, list:RIFFList)
+	
 		For Local prop:String = EachIn properties.map.Keys()
-			Local props:TStream = list.NewChunk(prop).GetNewDataStream()
-			
+			If Properties.IsDefault(prop) Continue
+			Local props:TStream = list.NewChunk("prop").GetNewDataStream()
+			props.WriteLine(prop)
 			Select Properties.GetDataType(prop)
 				Case "String"
 					props.WriteString("S")
-					props.WriteString(properties.GetData(prop))
+					props.WriteLine(properties.GetString(prop))
 				Case "Integer"
-					props.WriteString("I")
-					props.WriteInt(Int(properties.GetData(prop)))
+					Local i:Int = properties.GetInt(prop)
+					If i < 255
+						props.WriteString("B")
+						props.WriteByte(i)
+					Else
+						props.WriteString("I")
+						props.WriteInt(i)
+					EndIf
 				Case "Float"
 					props.WriteString("F")
-					props.WriteFloat(Float(properties.GetData(prop)))
+					props.WriteFloat(properties.GetFloat(prop))
 			EndSelect
 		Next
 	EndMethod
 	
 	Method LoadProperties(properties:TProperties, list:RIFFList)
 		For Local prop:RIFFChunk = EachIn list.Subchunks
-			If prop.id = RIFFID_IMAGEID Continue
+			If prop.id <> "prop" Continue
 			Local str:TStream = prop.GetNewDataStream()
+			Local name:String = str.ReadLine()
 			Select Chr(str.ReadByte())
 				Case "S"
-					properties.SetString(prop.id, str.ReadString(str.Size() - 1))
+					properties.SetString(name, str.ReadLine())
 				Case "I"
-					properties.SetInt(prop.id, str.ReadInt())
+					properties.SetInt(name, str.ReadInt())
 				Case "B"
-					properties.SetInt(prop.id, str.ReadByte())
+					properties.SetInt(name, str.ReadByte())
 				Case "F"
-					properties.SetFloat(prop.id, str.ReadFloat())
+					properties.SetFloat(name, str.ReadFloat())
 			End Select			
 		Next
 	End Method	
@@ -98,6 +107,22 @@ Type TTileFormat_Map Extends TTileFormat
 		Local s_imgnum:TStream = c_mapinfo.NewChunk(RIFFID_IMAGES).GetNewDataStream()
 		WriteUnsignedInt32(s_imgnum, imagecount)
 		
+		''''''''''
+		'Entities'
+		''''''''''
+		Local c_ents:RIFFList = CreateRIFFList(RIFFID_ENTS, c_riff)
+		For Local ent:TTileEntity = EachIn map.Entities
+			Local c_ent:RIFFList = CreateRIFFList(RIFFID_ENT, c_ents)
+			'Entity x, y, z, name
+			Local ids:TStream = c_ent.NewChunk(RIFFID_ENTINFO).GetNewDataStream()
+			ids.WriteInt(ent.x)
+			ids.WriteInt(ent.y)
+			ids.WriteInt(ent.z)
+			ids.WriteLine(ent.typename)
+			
+			'Entity properties
+			SaveProperties(ent.props, c_ent)
+		Next
 		
 		'''''''
 		'Zones'
@@ -267,7 +292,24 @@ Type TTileFormat_Map Extends TTileFormat
 			
 		Next
 		
-		
+		''''''''''
+		'Entities'
+		''''''''''
+		Local c_ents:RIFFList = RIFFList(c_riff.FindChunk(RIFFID_ENTS))
+		If (c_ents)
+			For Local c_ent:RIFFList = EachIn c_ents.Subchunks
+				'Entity x, y, z, name
+				Local einfo:TStream = c_ent.FindChunk(RIFFID_ENTINFO).GetNewDataStream()
+				Local x:Int = einfo.ReadInt()
+				Local y:Int = einfo.ReadInt()
+				Local z:Int = einfo.ReadInt()
+				Local name:String = einfo.ReadLine()
+				Local ent:TTileEntity = New TTileEntity.Init(name)
+				'Entity properties
+				LoadProperties(ent.props, c_ent)
+				map.AddEntity(x, y, z, ent)
+			Next
+		EndIf
 		''''''''	
 		'Layers'
 		''''''''		
@@ -323,4 +365,7 @@ Type TTileFormat_Map Extends TTileFormat
 	Global RIFFID_IMAGES:String = "imgs"
 	Global RIFFID_IMAGE:String = "img "
 	Global RIFFID_IMAGEID:String = "iid "
+	Global RIFFID_ENTS:String = "ents"
+	Global RIFFID_ENT:String = "ent "
+	Global RIFFID_ENTINFO:String = "einf"
 End Type
